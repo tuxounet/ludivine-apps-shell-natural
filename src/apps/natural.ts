@@ -6,7 +6,7 @@ export class NaturalInterpreterApp extends bases.AppElement {
     readonly kernel: kernel.IKernel,
     readonly parent: kernel.IKernelElement
   ) {
-    super("natural-interpreter", parent, kernel, ["/channels/input/natural"]);
+    super("natural-interpreter", kernel, parent, ["/channels/input/natural"]);
   }
 
   protected async main(): Promise<number> {
