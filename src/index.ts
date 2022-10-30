@@ -1,5 +1,9 @@
-import * as natural from "./apps/natural";
+import { NaturalInterpreterApp } from "./apps/natural";
+import { modules } from "@ludivine/runtime";
 
-export default {
-  natural,
+const moduleDefinition: modules.IModuleDefinition = {
+  applications: [
+    (kernel, parent?) => new NaturalInterpreterApp(kernel, parent),
+  ],
 };
+export default moduleDefinition;

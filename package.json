@@ -1,12 +1,14 @@
 {
   "name": "@ludivine-apps/shell-natural",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/",
-    "assets/"
+    "assets/", 
+    "LICENSE", 
+    "README.md"
   ],
   "scripts": {
     "prebuild": "npm run clean",
@@ -39,7 +41,7 @@
   },
   "homepage": "https://github.com/tuxounet/ludivine-apps-shell-natural#readme",
   "dependencies": {
-    "@ludivine/runtime": "^0.0.1"
+    "@ludivine/runtime": "file:../ludivine-runtime"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^23.0.2",
