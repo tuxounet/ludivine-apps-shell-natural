@@ -5,7 +5,7 @@ const moduleDefinition: modules.IModuleDefinition = {
   applications: [
     {
       name: "shell-natural",
-      ctor: (kernel, parent?) => new NaturalInterpreterApp(kernel, parent),
+      ctor: (kernel, parent) => new NaturalInterpreterApp(kernel, parent),
     },
   ],
 };

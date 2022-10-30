@@ -4,7 +4,7 @@ import { bases, kernel, messaging } from "@ludivine/runtime";
 export class NaturalInterpreterApp extends bases.AppElement {
   constructor(
     readonly kernel: kernel.IKernel,
-    readonly parent?: kernel.IKernelElement
+    readonly parent: kernel.IKernelElement
   ) {
     super("natural-interpreter", kernel, parent, ["/channels/input/natural"]);
   }
