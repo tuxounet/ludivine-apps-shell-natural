@@ -34,16 +34,26 @@ export class NaturalInterpreterApp extends bases.AppElement {
   }
 
   protected async processNaturalCommand(command: string): Promise<void> {
-    const helloPythonProject = await this.kernel.compute.executeProject(
+    const scriptsFolder = path.resolve(
+      __dirname,
+      "..",
+      "assets",
+      "interpreters"
+    );
+
+    const sourceVolume = await this.kernel.storage.createEphemeralVolume(
+      "local",
+      "local",
+      { folder: scriptsFolder },
+      this
+    );
+
+    const helloPythonProject = await this.kernel.compute.executeSource(
       "python-local",
-      {
-        name: "nlp",
-        dependencies: [{ name: "nltk" }],
-        extensions: [".py", ".txt"],
-        path: path.resolve(__dirname, "..", "assets", "interpreters"),
-        entryPoint: "nlp.py",
-        args: [command],
-      }
+      sourceVolume,
+      [{ name: "nltk" }],
+      "nlp.py",
+      [command]
     );
 
     await this.kernel.channels.broadcast(
