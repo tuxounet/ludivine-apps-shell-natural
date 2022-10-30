@@ -3,7 +3,10 @@ import { modules } from "@ludivine/runtime";
 
 const moduleDefinition: modules.IModuleDefinition = {
   applications: [
-    (kernel, parent?) => new NaturalInterpreterApp(kernel, parent),
+    {
+      name: "shell-natural",
+      ctor: (kernel, parent?) => new NaturalInterpreterApp(kernel, parent),
+    },
   ],
 };
 export default moduleDefinition;
