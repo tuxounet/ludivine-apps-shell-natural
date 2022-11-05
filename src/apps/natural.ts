@@ -1,19 +1,18 @@
 import path from "path";
-import { bases, kernel, messaging } from "@ludivine/runtime";
+import { bases, sessions, messaging, logging } from "@ludivine/runtime";
 
 export class NaturalInterpreterApp extends bases.AppElement {
-  constructor(
-    readonly kernel: kernel.IKernel,
-    readonly parent: kernel.IKernelElement
-  ) {
-    super("natural-interpreter", kernel, parent, ["/channels/input/natural"]);
+  constructor(readonly session: sessions.ISession) {
+    super("natural-interpreter", session, ["/channels/input/natural"]);
   }
 
+  @logging.logMethod()
   protected async main(): Promise<number> {
     await this.waitForShutdown();
     return 0;
   }
 
+  @logging.logMethod()
   async onMessage(message: messaging.IMessageEvent): Promise<void> {
     this.log.debug(
       "message arrival",
@@ -23,16 +22,19 @@ export class NaturalInterpreterApp extends bases.AppElement {
     );
     switch (message.recipient) {
       case "/channels/input/natural":
-        await this.kernel.channels.broadcast(
-          "commande natural recu " +
-            message.body.command +
+        await this.session.output({
+          type: "message",
+          body:
+            "commande natural recu " +
+            String(message.body.command) +
             " depuis " +
-            message.body.channel
-        );
-        await this.processNaturalCommand(message.body.command);
+            String(message.body.channel),
+        });
+        await this.processNaturalCommand(String(message.body.command));
     }
   }
 
+  @logging.logMethod()
   protected async processNaturalCommand(command: string): Promise<void> {
     const scriptsFolder = path.resolve(
       __dirname,
@@ -56,8 +58,9 @@ export class NaturalInterpreterApp extends bases.AppElement {
       [command]
     );
 
-    await this.kernel.channels.broadcast(
-      "interpretation de la commande: " + helloPythonProject.output
-    );
+    await this.session.output({
+      type: "message",
+      body: "interpretation de la commande: " + helloPythonProject.output,
+    });
   }
 }
