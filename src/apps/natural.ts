@@ -1,27 +1,18 @@
 import path from "path";
-import { bases, sessions, messaging } from "@ludivine/runtime";
+import { bases, sessions, messaging, logging } from "@ludivine/runtime";
 
 export class NaturalInterpreterApp extends bases.AppElement {
   constructor(readonly session: sessions.ISession) {
-    super("natural-interpreter", session);
+    super("natural-interpreter", session, ["/channels/input/natural"]);
   }
 
-  protected async onStart(): Promise<void> {
-    await this.kernel.messaging.subscribeTopic("/channels/input/natural", this);
-  }
-
-  protected async onStop(): Promise<void> {
-    await this.kernel.messaging.unsubscribeTopic(
-      "/channels/input/natural",
-      this.fullName
-    );
-  }
-
+  @logging.logMethod()
   protected async main(): Promise<number> {
     await this.waitForShutdown();
     return 0;
   }
 
+  @logging.logMethod()
   async onMessage(message: messaging.IMessageEvent): Promise<void> {
     this.log.debug(
       "message arrival",
@@ -43,6 +34,7 @@ export class NaturalInterpreterApp extends bases.AppElement {
     }
   }
 
+  @logging.logMethod()
   protected async processNaturalCommand(command: string): Promise<void> {
     const scriptsFolder = path.resolve(
       __dirname,

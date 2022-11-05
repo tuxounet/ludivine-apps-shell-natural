@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/tuxounet/ludivine-apps-shell-natural#readme",
   "dependencies": {
-    "@ludivine/runtime": "^0.0.6"
+    "@ludivine/runtime": "^0.0.7"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^23.0.2",
