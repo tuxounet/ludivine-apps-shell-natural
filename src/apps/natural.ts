@@ -1,12 +1,20 @@
 import path from "path";
-import { bases, kernel, messaging } from "@ludivine/runtime";
+import { bases, sessions, messaging } from "@ludivine/runtime";
 
 export class NaturalInterpreterApp extends bases.AppElement {
-  constructor(
-    readonly kernel: kernel.IKernel,
-    readonly parent: kernel.IKernelElement
-  ) {
-    super("natural-interpreter", kernel, parent, ["/channels/input/natural"]);
+  constructor(readonly session: sessions.ISession) {
+    super("natural-interpreter", session);
+  }
+
+  protected async onStart(): Promise<void> {
+    await this.kernel.messaging.subscribeTopic("/channels/input/natural", this);
+  }
+
+  protected async onStop(): Promise<void> {
+    await this.kernel.messaging.unsubscribeTopic(
+      "/channels/input/natural",
+      this.fullName
+    );
   }
 
   protected async main(): Promise<number> {
@@ -23,13 +31,15 @@ export class NaturalInterpreterApp extends bases.AppElement {
     );
     switch (message.recipient) {
       case "/channels/input/natural":
-        await this.kernel.channels.broadcast(
-          "commande natural recu " +
-            message.body.command +
+        await this.session.output({
+          type: "message",
+          body:
+            "commande natural recu " +
+            String(message.body.command) +
             " depuis " +
-            message.body.channel
-        );
-        await this.processNaturalCommand(message.body.command);
+            String(message.body.channel),
+        });
+        await this.processNaturalCommand(String(message.body.command));
     }
   }
 
@@ -56,8 +66,9 @@ export class NaturalInterpreterApp extends bases.AppElement {
       [command]
     );
 
-    await this.kernel.channels.broadcast(
-      "interpretation de la commande: " + helloPythonProject.output
-    );
+    await this.session.output({
+      type: "message",
+      body: "interpretation de la commande: " + helloPythonProject.output,
+    });
   }
 }
