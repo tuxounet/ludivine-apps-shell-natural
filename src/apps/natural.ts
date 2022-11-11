@@ -76,7 +76,7 @@ export class NaturalInterpreterApp extends bases.AppElement {
 
     await this.session.output({
       type: "message",
-      body: "interpretation de la commande: " + helloPythonProject.output,
+      body: "interpretation de la commande: " + String(helloPythonProject.output),
     });
   }
 }
