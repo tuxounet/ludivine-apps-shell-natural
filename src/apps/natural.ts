@@ -1,10 +1,26 @@
 import path from "path";
-import { bases, sessions, messaging, logging } from "@ludivine/runtime";
+import {
+  bases,
+  sessions,
+  messaging,
+  logging,
+  compute,
+  storage,
+  ioc,
+} from "@ludivine/runtime";
 
 export class NaturalInterpreterApp extends bases.AppElement {
   constructor(readonly session: sessions.ISession) {
     super("natural-interpreter", session, ["/channels/input/natural"]);
+    this.storage = this.kernel.container.get("storage");
+    this.compute = this.kernel.container.get("compute");
   }
+
+  @ioc.Inject()
+  storage: storage.IStorageBroker;
+
+  @ioc.Inject()
+  compute: compute.IComputeBroker;
 
   @logging.logMethod()
   protected async main(): Promise<number> {
@@ -43,14 +59,14 @@ export class NaturalInterpreterApp extends bases.AppElement {
       "interpreters"
     );
 
-    const sourceVolume = await this.kernel.storage.createEphemeralVolume(
+    const sourceVolume = await this.storage.createEphemeralVolume(
       "local",
       "local",
       { folder: scriptsFolder },
       this
     );
 
-    const helloPythonProject = await this.kernel.compute.executeSource(
+    const helloPythonProject = await this.compute.executeSource(
       "python-local",
       sourceVolume,
       [{ name: "nltk" }],
