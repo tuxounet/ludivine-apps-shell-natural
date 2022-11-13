@@ -6,7 +6,6 @@ import {
   logging,
   compute,
   storage,
-  ioc,
 } from "@ludivine/runtime";
 
 export class NaturalInterpreterApp extends bases.AppElement {
@@ -16,10 +15,7 @@ export class NaturalInterpreterApp extends bases.AppElement {
     this.compute = this.kernel.container.get("compute");
   }
 
-  @ioc.Inject()
   storage: storage.IStorageBroker;
-
-  @ioc.Inject()
   compute: compute.IComputeBroker;
 
   @logging.logMethod()
@@ -38,14 +34,13 @@ export class NaturalInterpreterApp extends bases.AppElement {
     );
     switch (message.recipient) {
       case "/channels/input/natural":
-        await this.session.output({
-          type: "message",
-          body:
-            "commande natural recu " +
+        await this.session.output(
+          "commande natural recu " +
             String(message.body.command) +
             " depuis " +
             String(message.body.channel),
-        });
+          "message"
+        );
         await this.processNaturalCommand(String(message.body.command));
     }
   }
@@ -74,10 +69,9 @@ export class NaturalInterpreterApp extends bases.AppElement {
       [command]
     );
 
-    await this.session.output({
-      type: "message",
-      body:
-        "interpretation de la commande: " + String(helloPythonProject.output),
-    });
+    await this.session.output(
+      "interpretation de la commande: " + String(helloPythonProject.output),
+      "message"
+    );
   }
 }
